@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package DataAcces;
+package spdvi.fitnesscasesnoves.dataAcces;
 
-import dtos.Usuari;
+import spdvi.fitnesscasesnoves.dto.Usuari;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -74,7 +74,7 @@ public class DataAccess {
         updateStatement.setString(2, user.getEmail());
         updateStatement.setString(3, user.getPassword()); // Suponiendo que tienes un método getPassword en Usuari
         updateStatement.setBytes(4, user.getFoto());
-        updateStatement.setBoolean(5, user.isInstructor()); // Usar el nuevo método isInstructor
+        updateStatement.setBoolean(5, user.isIsinstructor()); // Usar el nuevo método isInstructor
         updateStatement.setInt(6, user.getId());
 
         // Ejecutar la actualización
