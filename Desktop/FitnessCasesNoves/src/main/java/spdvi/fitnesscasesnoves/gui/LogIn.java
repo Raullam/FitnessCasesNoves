@@ -1,5 +1,6 @@
 package spdvi.fitnesscasesnoves.gui;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import spdvi.fitnesscasesnoves.dto.Usuari;
 import spdvi.fitnesscasesnoves.dataAcces.DataAccess;
 import java.awt.event.FocusAdapter;
@@ -29,22 +30,23 @@ private String password; // Para almacenar el valor de jPasswordField1
 
         
         // Añadir FocusListener a jTextPane1 para capturar el valor cuando se pierda el foco
-    jTextPane1.addFocusListener(new FocusAdapter() {
+    jTextPaneUsuari.addFocusListener(new FocusAdapter() {
         @Override
         public void focusLost(FocusEvent e) {
             // Guardar el valor en la variable username cuando se pierda el foco
-            username = jTextPane1.getText();
+            username = jTextPaneUsuari.getText();
         
             
         }
     });
     
     // Añadir FocusListener a jPasswordField1 para capturar el valor cuando se pierda el foco
-    jPasswordField1.addFocusListener(new FocusAdapter() {
+    jLabelTitolUsuari.addFocusListener(new FocusAdapter() {
         @Override
         public void focusLost(FocusEvent e) {
             // Guardar el valor en la variable password cuando se pierda el foco
-            password = new String(jPasswordField1.getPassword()); // Convierte a String
+            password = new String(jLabelTitolUsuari.getPassword()); // Convierte a String
+            
             
             }
     });
@@ -55,38 +57,31 @@ private String password; // Para almacenar el valor de jPasswordField1
 
 // Método que valida el usuario contra la base de datos
 private void validarUsuario() {
-    
     // Llamar a la base de datos para verificar si el usuario existe
     DataAccess da = new DataAccess();
     Usuari user = da.getUsuarioByUsername(username); // Método que consulta el usuario por nombre
+
     // Verifica si el campo username está vacío
     if (username == null || username.isEmpty()) {
         JOptionPane.showMessageDialog(this, "El campo de usuario no puede estar vacío.");
-        // Mostrar un modal con el nuevo valor
-      
         return;
     }
-
-    
 
     System.out.println("Usuario existe.");
 
     if (user != null) {
         // Comparar la contraseña ingresada con la contraseña de la base de datos
-        if (user.getPassword().equals(password)) {
-            // Si coinciden, mostrar el mensaje y pasar al siguiente JFrame
-            //JOptionPane.showMessageDialog(this, "Acceso concedido. Puedes pasar al siguiente JFrame." + username);
-            
-            // si todo bien entra en el jframe siguiente
-            
-            TerceraVentana terceraVentana = new TerceraVentana(); //instancia de la siguiente clase 'ventana'
-            terceraVentana.setVisible(true);
-            this.setVisible(false);
-           // NewJFrame newJF = new NewJFrame();
-            // newJF();
-            // Aquí puedes abrir el nuevo JFrame
-            // new SiguienteJFrame().setVisible(true);
-            // this.dispose(); // Opcional: cierra el JFrame actual
+        if (BCrypt.verifyer().verify(password.toCharArray(), user.getPasswordHash()).verified) { // Usar BCrypt para validar la contraseña
+            // Validar si el usuario es instructor
+            if (user.isInstructor() == true) {
+                // Si todo está bien, entra en el JFrame siguiente
+                TerceraVentana terceraVentana = new TerceraVentana(); // instancia de la siguiente clase 'ventana'
+                terceraVentana.setVisible(true);
+                this.setVisible(false);
+            } else {
+                // Si no es instructor, mostrar mensaje de error
+                JOptionPane.showMessageDialog(this, "No tiene acceso por no ser instructor.");
+            }
         } else {
             // Si la contraseña no coincide, mostrar mensaje de error
             JOptionPane.showMessageDialog(this, "Contraseña incorrecta.");
@@ -95,7 +90,8 @@ private void validarUsuario() {
         // Si el usuario no existe, mostrar mensaje de error
         JOptionPane.showMessageDialog(this, "El usuario no existe.");
     }
-    }
+}
+
     public Usuari getUsuarioByUsername(String username) {
     String sql = "SELECT * FROM usuaris WHERE Nom = ?";
     Usuari user = null;
@@ -113,7 +109,8 @@ private void validarUsuario() {
                 resultSet.getString("Nom"),
                 resultSet.getString("Email"),
                 resultSet.getString("PasswordHash"),
-                resultSet.getBytes("Foto"),
+                    
+                // resultSet.getBytes("Foto"),
                 resultSet.getBoolean("IsInstructor")
             );
         }
@@ -135,45 +132,44 @@ private void validarUsuario() {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        jButtonEntrarALaApp = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        jTextPaneUsuari = new javax.swing.JTextPane();
+        jLabelTitolUsuari = new javax.swing.JPasswordField();
+        jLabelTitolLabel = new javax.swing.JLabel();
+        jLabelTitolPassword = new javax.swing.JLabel();
+        jLabelTitol = new javax.swing.JLabel();
+        jButtonRegistre = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Entrar a la app");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEntrarALaApp.setText("Entrar a la app");
+        jButtonEntrarALaApp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonEntrarALaAppActionPerformed(evt);
             }
         });
 
-        jScrollPane1.setViewportView(jTextPane1);
+        jScrollPane1.setViewportView(jTextPaneUsuari);
 
-        jPasswordField1.setText("jPasswordField1");
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        jLabelTitolUsuari.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                jLabelTitolUsuariActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Usuari");
+        jLabelTitolLabel.setText("Usuari");
 
-        jLabel2.setText("Contrasenya");
+        jLabelTitolPassword.setText("Contrasenya");
 
-        jLabel3.setText("Registre d'usuaris");
+        jLabelTitol.setText("Registre d'usuaris");
 
-        jButton2.setBackground(new java.awt.Color(242, 242, 242));
-        jButton2.setText("Registra't");
-        jButton2.setBorder(null);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButtonRegistre.setBackground(new java.awt.Color(242, 242, 242));
+        jButtonRegistre.setText("Registra't");
+        jButtonRegistre.setBorder(null);
+        jButtonRegistre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButtonRegistreActionPerformed(evt);
             }
         });
 
@@ -185,27 +181,27 @@ private void validarUsuario() {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(153, 153, 153)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabelTitol, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(164, 164, 164)
-                        .addComponent(jLabel2)))
+                        .addComponent(jLabelTitolPassword)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1))
+                        .addComponent(jButtonEntrarALaApp))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(76, 76, 76)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPasswordField1)
+                            .addComponent(jLabelTitolUsuari)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton2)
+                                    .addComponent(jButtonRegistre)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(105, 105, 105)
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(jLabelTitolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 114, Short.MAX_VALUE)))))
                 .addGap(68, 68, 68))
         );
@@ -213,39 +209,39 @@ private void validarUsuario() {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(40, 40, 40)
-                .addComponent(jLabel3)
+                .addComponent(jLabelTitol)
                 .addGap(22, 22, 22)
-                .addComponent(jLabel1)
+                .addComponent(jLabelTitolLabel)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel2)
+                .addComponent(jLabelTitolPassword)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabelTitolUsuari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(jButtonRegistre)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(jButtonEntrarALaApp)
                 .addGap(36, 36, 36))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+    private void jLabelTitolUsuariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jLabelTitolUsuariActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_jLabelTitolUsuariActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonEntrarALaAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEntrarALaAppActionPerformed
 
         validarUsuario();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonEntrarALaAppActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButtonRegistreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegistreActionPerformed
         Register rgstr = new Register();
         rgstr.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_jButtonRegistreActionPerformed
          /**
      * @param args the command line arguments
      */
@@ -285,14 +281,14 @@ private void validarUsuario() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JButton jButtonEntrarALaApp;
+    private javax.swing.JButton jButtonRegistre;
+    private javax.swing.JLabel jLabelTitol;
+    private javax.swing.JLabel jLabelTitolLabel;
+    private javax.swing.JLabel jLabelTitolPassword;
+    private javax.swing.JPasswordField jLabelTitolUsuari;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTextPane jTextPaneUsuari;
     // End of variables declaration//GEN-END:variables
 
     private Connection getConnection() {

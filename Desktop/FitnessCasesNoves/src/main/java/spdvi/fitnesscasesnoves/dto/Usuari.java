@@ -9,18 +9,20 @@ public class Usuari {
     private int id;
     private String nom;
     private String email;
-    private String password;
+    private String passwordHash;
     private byte[] foto;
     private boolean Isinstructor;
 
-    public Usuari(int id, String nom, String email, String password, byte[] foto, boolean Isinstructor) {
+    public Usuari(int id, String nom, String email, String passwordHash, boolean Isinstructor) {
         this.id = id;
         this.nom = nom;
         this.email = email;
-        this.password = password;
-        this.foto = foto;
+        this.passwordHash = passwordHash;
+        this.foto = null;
         this.Isinstructor = Isinstructor;
     }
+
+    public Usuari(){}
 
     public int getId() {
         return id;
@@ -46,12 +48,12 @@ public class Usuari {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasswordHash(String password) {
+        this.passwordHash = password;
     }
 
     public byte[] getFoto() {
@@ -62,13 +64,14 @@ public class Usuari {
         this.foto = foto;
     }
 
-    public boolean isIsinstructor() {
+    public boolean isInstructor() {
         return Isinstructor;
     }
 
     public void setIsinstructor(boolean Isinstructor) {
         this.Isinstructor = Isinstructor;
     }
+    
 
    
 }
